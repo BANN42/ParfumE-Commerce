@@ -1,4 +1,5 @@
 import Product from "../model/Product.js";
+import { FrontPagination } from "../utils/FrontBackPagePagination.js";
 
 export async function createProduct(req  , res) {
     try{
@@ -9,16 +10,26 @@ export async function createProduct(req  , res) {
     }catch(error){
         return res.status(500).json({error : error.message})
     }
-}
+}  
 
 
-export async function getAllProducts(req, res) {
+export async function getProducts(req, res) {
     try{
-        let allProducts = await Product.find();
-        if(!allProducts.length){
-            return res.status(200).json({allProducts , message: "No Product Registered Yet" , found : false});
+
+
+        let totalDocument=  Product.countDocuments();
+        let totalPage = (page- 1) * (limit-10)
+
+
+        let pg = req.query.page;
+        let lmt = req.query.limit 
+        let [page , limit , skip]  = FrontPagination(pg  , lmt);
+     
+        let targetProducts = await Product.find().skip(skip).limit(limit);
+        if(!targetProducts.length){
+            return res.status(200).json({targetProducts , message: "No Product Registered Yet" , found : false});
         }else{
-            return res.status(200).json({allProducts , message : allProducts , found : true})
+            return res.status(200).json({targetProducts  , found : true})
         }
     }catch(error){
         return res.status(500).json({error : error.message})

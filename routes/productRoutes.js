@@ -1,6 +1,7 @@
 import express from "express";
 import { m_validationProductClaims } from "../middlewares/validation/validationProductClaims.js";
-import { createProduct, getAllProducts } from "../controllers/productController.js";
+import { createProduct, getProducts } from "../controllers/productController.js";
+import Product from "../model/Product.js";
 const productRoutes = express.Router();
 
 
@@ -29,7 +30,7 @@ productRoutes.post('/add-product' ,m_validationProductClaims,  async function(re
 
 productRoutes.get('/all-products' , async function(req, res) {
   try{
-    await getAllProducts(req, res)
+  await getProducts(req, res);
   }catch(error){
     return res.status(500).json({error : error.message})
   }
