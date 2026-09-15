@@ -1,5 +1,6 @@
 import Product from "../model/Product.js";
 import { FrontPagination } from "../utils/FrontBackPagePagination.js";
+import { productValidationUpdating } from "../utils/ProductValidation.js";
 
 export async function createProduct(req  , res) {
     try{
@@ -30,5 +31,30 @@ export async function getProducts(req, res) {
         
     }catch(error){
         return res.status(500).json({error : error.message})
+    }
+}
+
+
+
+
+export async function getProductById(req ,res) {
+    try{
+        let Id = req.params.id;
+        let targetProduct = await Product.findById(Id);
+        return targetProduct ? res.status(200).json({targetProduct , isFounded : true}):
+        res.status(404).json({isFounded : false , message : "Product Not Found"});
+    }catch(error){
+        return error.name.toLowerCase() === "casterror" ? res.status(400).json({error : "Enter A valide Id" , isFounded : false}):
+        res.status(500).json({error : error.message })
+    }
+}
+
+
+export async function updateProductById(req, res) {
+    try{
+        let content = req.body;
+        
+    }catch(error){
+
     }
 }
