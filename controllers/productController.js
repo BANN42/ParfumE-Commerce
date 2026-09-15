@@ -15,22 +15,19 @@ export async function createProduct(req  , res) {
 
 export async function getProducts(req, res) {
     try{
-
-
-        let totalDocument=  Product.countDocuments();
-        let totalPage = (page- 1) * (limit-10)
-
-
         let pg = req.query.page;
-        let lmt = req.query.limit 
-        let [page , limit , skip]  = FrontPagination(pg  , lmt);
-     
-        let targetProducts = await Product.find().skip(skip).limit(limit);
-        if(!targetProducts.length){
-            return res.status(200).json({targetProducts , message: "No Product Registered Yet" , found : false});
-        }else{
-            return res.status(200).json({targetProducts  , found : true})
-        }
+        let lmt = req.query.limit;
+        let [page , limit , skip]  = FrontPagination(pg  , lmt );
+        
+        Promise.all([Product.countDocuments() , Product.find().skip(skip).limit(limit)])
+        .then(function([nbDocuments , targetProducts]) {
+            let totalPages = Math.ceil(nbDocuments/limit);
+        return res.status(200).json({targetProducts , page , totalPages  , nbDocuments})
+        }).catch(function(error) {
+            return res.status(500).json({error : error.message})
+        })
+        
+        
     }catch(error){
         return res.status(500).json({error : error.message})
     }
