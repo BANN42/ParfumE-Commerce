@@ -52,9 +52,25 @@ export async function getProductById(req ,res) {
 
 export async function updateProductById(req, res) {
     try{
-        let content = req.body;
-        
+        let targetProduct = await  Product.findByIdAndUpdate(req.params.id , req.body);
+        if(!targetProduct){
+            return res.status(404).json({message : "Product Is Unknown..."})
+        }
+        return res.status(200).json({message : "The Product Has Been Updated Successfuly" , productID : targetProduct._id});
     }catch(error){
+        return res.status(500).json({error : error.message});
+    }
+}
 
+
+export async function deleteProductById(req , res) {
+    try{
+        let targetProduct  = await Product.findByIdAndDelete(req.params.id);
+        if(!targetProduct){
+            return res.status(404).json({error : "Product is Undefined"});
+        }
+        return res.status(200).json({message  : "The Product Has Been Deleted Seccesfuly"});
+    }catch(error) {
+        return res.status(500).json({error : error.message});
     }
 }

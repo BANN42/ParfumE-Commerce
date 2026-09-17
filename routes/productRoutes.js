@@ -1,8 +1,9 @@
 import express from "express";
 import { m_validationProductClaims } from "../middlewares/validation/validationProductClaims.js";
-import { createProduct, getProductById, getProducts } from "../controllers/productController.js";
+import { createProduct, deleteProductById, getProductById, getProducts, updateProductById } from "../controllers/productController.js";
 import Product from "../model/Product.js";
 import { m_validationProductClaimsUpdate } from "../middlewares/validation/validationProductUpdateClaims.js";
+import { m_IsValideID } from "../middlewares/validation/m_isValideID.js";
 const productRoutes = express.Router();
 
 
@@ -45,7 +46,7 @@ productRoutes.get('/all-products' , async function(req, res) {
 */
 
 
-productRoutes.get('/:id' , async function (req , res) {
+productRoutes.get('/:id' ,m_IsValideID ,  async function (req , res) {
   try{
     await getProductById(req, res)
   }catch(error) {
@@ -60,14 +61,21 @@ productRoutes.get('/:id' , async function (req , res) {
 * URL : /:id
 */
 
-productRoutes.put("/:id"  ,m_validationProductClaimsUpdate ,   async function (req, res) {
+productRoutes.put("/:id"  ,m_IsValideID ,m_validationProductClaimsUpdate ,   async function (req, res) {
   try{
-    modelr()
+    await updateProductById(req, res)
   }catch(error){
-    console.log(error);
     return res.status(500).json({error : error.message});
   }
 });
 
+
+productRoutes.delete("/:id", m_IsValideID , async function(req,res ) {
+  try{
+    await deleteProductById(req,res)
+  }catch(error) {
+    return res.status(500).json({error : error.message})
+  }
+})
 
 export default productRoutes;

@@ -12,21 +12,25 @@ export let productValidation = function(objectBody) {
     volume : Joi.number().required(),
     stock : Joi.number().required(),
     img : Joi.string().required(),
-    }).validate(objectBody);
+    }).validate(objectBody , {
+        abortEarly : false
+    });
 }
 
 // validation the user Claims at the Update
 export let productValidationUpdating = function (objectBody) {
     return Joi.object({
-    name : Joi.string().required(),
-    brand : Joi.string().required(),
-    description: Joi.string().required(),
+    name : Joi.string(),
+    brand : Joi.string(),
+    description: Joi.string(),
     price : Joi.number().min(0).default(0),
-    category : Joi.string().allow(['Male' , "Female", "Mixte"]),
-    volume : Joi.number().required(),
-    stock : Joi.number().required(),
-    img : Joi.string().required(),
-    }).validate(objectBody);
+    category : Joi.string().valid('Male' , "Female", "Mixte"),
+    volume : Joi.number(),
+    stock : Joi.number(),
+    img : Joi.string(),
+    }).validate(objectBody , {
+        abortEarly : false,
+    });
 }
 
 
