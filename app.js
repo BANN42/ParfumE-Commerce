@@ -21,6 +21,7 @@ app.use(cors());
 
 app.use("/api/v1/products" , productRoutes);
 
+// app.use('/api/v1/Auth/user' , authUserRoute)
  
 main().then(function() {
     app.listen(PORT , function(){
