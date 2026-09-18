@@ -13,7 +13,7 @@ export async function createProduct(req  , res) {
     }
 }  
 
-
+ 
 export async function getProducts(req, res) {
     try{
         let pg = req.query.page;
