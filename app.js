@@ -6,6 +6,7 @@ config();
 
 import main from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
+import userAuthRoutes from "./routes/userRoutes.js";
 
  
 
@@ -21,7 +22,7 @@ app.use(cors());
 
 app.use("/api/v1/products" , productRoutes);
 
-// app.use('/api/v1/Auth/user' , authUserRoute)
+app.use('/api/v1/Auth/user' , userAuthRoutes);
  
 main().then(function() {
     app.listen(PORT , function(){

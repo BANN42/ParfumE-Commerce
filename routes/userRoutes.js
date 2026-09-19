@@ -1,16 +1,20 @@
+
+
 import express from "express";
-import validationUserSchema from "../utils/validationUserSchema";
-const userRoutes = express.Router();
+import m_validationRegisterClaims from "../middlewares/validation/m_validationRegisterClaims.js";
+import { appendUserInDatabase } from "../controllers/userController.js";
+
+const userAuthRoutes = express.Router();
 
 // register
 
-userRoutes.post('/register' , async function (req, res) {
+userAuthRoutes.post('/register' ,m_validationRegisterClaims ,  async function (req, res) {
     try{
-        
+        await appendUserInDatabase(req, res)
     }catch(error){
-
+        return res.status(500).json({error : error.message});
     }
-})
+});
 
 // verify Account
 
@@ -22,4 +26,4 @@ userRoutes.post('/register' , async function (req, res) {
 
 
 
-export default userRoutes;
+export default userAuthRoutes;

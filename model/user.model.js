@@ -7,15 +7,16 @@ config();
 const UserSchema  = new  mongoose.Schema({
     username: {
         type : String,
-        required : true
+        required : [true, "User name is Required"]
     },
     email : {
         type : String,
-        required: true
+        required: [true , "Email is Required"],
+        unique : true 
     },
     password : {
         type : String,
-        required : true
+        required : [true , 'Email is Required']
     }, 
     birthday : {
         type  : String,
@@ -23,7 +24,7 @@ const UserSchema  = new  mongoose.Schema({
     },
     phone: {
         type : String,
-        require : true
+        required : true
     },
     isVerified : {
         type : Boolean,
@@ -32,8 +33,7 @@ const UserSchema  = new  mongoose.Schema({
     role: { 
     type: String, 
     enum: ['admin', 'user', 'guest'],
-    default : "guest", 
-    required: true 
+    default : "guest"
   },
   gender : {
     type : String, 
@@ -46,12 +46,19 @@ const UserSchema  = new  mongoose.Schema({
   }
 });
 
-UserSchema.pre('save' , async function (doc , next){
-      bcrypt.hash(this.password , process.env.salt)
+
+// this hooks fully focus at the password Hash
+UserSchema.pre('save' , async function (next){
+    if(this.isModified("password")){
+        let salt  = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password , salt);
+    }
      next()
 })
 
 
 
-export default mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+
+export default User;
 
