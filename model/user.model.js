@@ -24,7 +24,7 @@ const UserSchema  = new  mongoose.Schema({
     },
     phone: {
         type : String,
-        required : true
+        required : [true , 'Please Provide a Correct Phone Number']
     },
     isVerified : {
         type : Boolean,
@@ -48,14 +48,14 @@ const UserSchema  = new  mongoose.Schema({
 
 
 // this hooks fully focus at the password Hash
-UserSchema.pre('save' , async function (next){
+UserSchema.pre('save' , async function (){
     if(this.isModified("password")){
         let salt  = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password , salt);
     }
-     next()
-})
-
+   
+    
+}) 
 
 
 const User = mongoose.model('User', UserSchema);
