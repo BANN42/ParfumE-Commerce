@@ -1,21 +1,23 @@
-import multer from "multer";
+import Cloudinary from "../config/cloudinary.js";
 
-function handleUploadImage(req, res, next) {
+function CloudinaryUploadImageMiddleware(req, res, next) {
     try{
-        let {img} = req.body;
-        let storage = multer.memoryStorage()
-        let upload = multer({ storage: storage });
-
-    app.post('/upload', upload.single('image'), async (req, res) => {
-        const result = await cloudinary.uploader.upload_stream({
-        folder: 'uploads'
-    }).end(req.file.buffer);
-  
-     res.json({ message : "The Image Has Been Uploaded .." });
-});
-    }catch(error) {
+        let imageBase64 = req.file.buffer.toString('base64')
+        let dataURI = `data:${req.file.mimetype};base64,${imageBase64}`
+         Cloudinary.uploader.upload(dataURI , {
+            allowed_formats: ["png" , 'jpeg' , "jpg"]
+        } , function(error ,result) {
+            if(error) {
+                return res.status(400).json({error : error.message});
+            }
+            req.body.img = result.secure_url;
+            next()
+        } )
+    }catch(error){
+        console.log('this')
         return res.status(500).json({error : error.message});
     }
 }
 
-export default handleUploadImage;
+
+export default CloudinaryUploadImageMiddleware;

@@ -1,3 +1,5 @@
+
+import Cloudinary from "../config/cloudinary.js";
 import User from "../model/user.model.js";
 
 export async function appendUserInDatabase(req, res) {
@@ -6,6 +8,9 @@ export async function appendUserInDatabase(req, res) {
         let user = new User({
             username, email, password  , birthday, phone, isVerified , role ,gender ,  img
         });
+        
+      
+        
         await user.save();
         return res.status(201).json({message : "The User Has Been Created ..."})
     }catch(error) {
