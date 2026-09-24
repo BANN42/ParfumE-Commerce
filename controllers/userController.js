@@ -1,6 +1,7 @@
 
-import Cloudinary from "../config/cloudinary.js";
+import CloudinaryConfig from "../config/cloudinaryConfig.js";
 import User from "../model/user.model.js";
+
 
 export async function appendUserInDatabase(req, res) {
     try{
