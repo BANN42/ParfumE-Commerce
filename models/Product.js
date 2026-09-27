@@ -24,15 +24,15 @@ const ParfumSchema = new mongoose.Schema({
         enum : ['Female', 'Male' , "Mixte"]
     },
     volume : {
-        type : Number,
+        type : String,
 
     },
     stock :{
         type : Number, 
-
+        default : 0
     },
-    img : {
-        type : String,
+    imgs : {
+        type : [String],
        
     }
 } , {

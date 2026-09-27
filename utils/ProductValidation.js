@@ -34,3 +34,19 @@ export let productValidationUpdating = function (objectBody) {
 }
 
 
+export let productValidationCreateMultipleImages = function(objectBody){
+    return Joi.object({
+      name: Joi.string().required(),
+      brand: Joi.string().required(),
+      description: Joi.string().required(),
+      price: Joi.number().min(0).default(0).required(),
+      category: Joi.string().valid("Male", "Female", "Mixte").required(),
+      volume: Joi.number().required(),
+      stock: Joi.number().required(),
+      imgs: Joi.array().items(Joi.string()).required(), // this is might an array or a single item
+    }).validate(objectBody, {
+      abortEarly: false,
+    });
+}
+
+

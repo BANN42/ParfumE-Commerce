@@ -1,6 +1,6 @@
 import { productValidationUpdating } from "../../utils/ProductValidation.js";
 
-export function m_validationProductClaimsUpdate(req ,res , next){
+export function validationProductUpdate(req ,res , next){
     try{
         let {error} = productValidationUpdating(req.body);
         if(error){
@@ -14,4 +14,4 @@ export function m_validationProductClaimsUpdate(req ,res , next){
     }
 }
 
-
+ 

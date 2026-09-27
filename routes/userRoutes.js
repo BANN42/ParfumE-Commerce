@@ -1,21 +1,26 @@
-
-
 import express from "express";
-import m_validationRegisterClaims from "../middlewares/validation/m_validationRegisterClaims.js";
+import validationRegister from "../middlewares/validation/validationRegister.js";
 import { appendUserInDatabase } from "../controllers/userController.js";
-
+import multerUplaoder from "../middlewares/multerUploader.js";
+import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
 
 const userAuthRoutes = express.Router();
 
 // register
 
-userAuthRoutes.post('/register' , m_validationRegisterClaims,  async function (req, res) {
-    try{
-        await appendUserInDatabase(req, res)
-    }catch(error){
-        return res.status(500).json({error : error.message});
+userAuthRoutes.post(
+  "/register",
+  multerUplaoder.single("img"),
+  uploadToCloudinary,
+  validationRegister,
+  async function (req, res) {
+    try {
+      await appendUserInDatabase(req, res);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
-});
+  },
+);
 
 // verify Account
 
@@ -24,7 +29,5 @@ userAuthRoutes.post('/register' , m_validationRegisterClaims,  async function (r
 // update Account Claims
 
 // logout
-
-
 
 export default userAuthRoutes;

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export function m_IsValideID(req, res , next) {
+export function isValideId(req, res , next) {
    try{
     let id = req.params.id;
     let IsValideID = mongoose.Types.ObjectId.isValid(id)
