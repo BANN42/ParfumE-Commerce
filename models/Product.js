@@ -24,7 +24,7 @@ const ParfumSchema = new mongoose.Schema({
         enum : ['Female', 'Male' , "Mixte"]
     },
     volume : {
-        type : String,
+        type : Number,
 
     },
     stock :{
