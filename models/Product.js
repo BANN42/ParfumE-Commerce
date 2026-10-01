@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 
-const ParfumSchema = new mongoose.Schema({
+const ProductSchema = new mongoose.Schema({
+    createdByUser: {
+        type : mongoose.Types.ObjectId,
+        ref : "User"
+    },
     name : {
         type: String,
         required : true
@@ -40,6 +44,6 @@ const ParfumSchema = new mongoose.Schema({
 })
 
 
-let Product = mongoose.model('Product' , ParfumSchema);
+let Product = mongoose.model('Product' , ProductSchema);
 export default Product;
 

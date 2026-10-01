@@ -19,7 +19,7 @@ const UserSchema  = new  mongoose.Schema({
         required : [true , 'Email is Required']
     }, 
     birthday : {
-        type  : String,
+        type  : Date,
         required  : true
     },
     phone: {
@@ -42,7 +42,6 @@ const UserSchema  = new  mongoose.Schema({
   },
   img : {
     type : String, 
-    // do  i need to add something more 
   }
 });
 
@@ -54,6 +53,8 @@ UserSchema.pre('save' , async function (){
         this.password =  bcrypt.hash(this.password , salt);
     } 
 }) 
+
+
 
 
 const User = mongoose.model('User', UserSchema);

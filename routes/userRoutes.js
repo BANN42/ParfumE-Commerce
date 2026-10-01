@@ -3,6 +3,8 @@ import validationRegister from "../middlewares/validation/validationRegister.js"
 import { appendUserInDatabase } from "../controllers/userController.js";
 import multerUplaoder from "../middlewares/multerUploader.js";
 import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
+import { isValideAccount } from "../middlewares/isValideAccount.js";
+import { validationLogin } from "../middlewares/validationLogin.js";
 
 const userAuthRoutes = express.Router();
 
@@ -25,6 +27,14 @@ userAuthRoutes.post(
 // verify Account
 
 // login
+userAuthRoutes.post('/login' , validationLogin , isValideAccount,  function(req, res) {
+  try{
+   
+  }catch(error) {
+    return res.status(500).json({error: error.message})
+  }
+})
+
 
 // update Account Claims
 
