@@ -21,9 +21,21 @@ async function uploadToCloudinary(req, res, next) {
         });
       }),
     );
-    req.body.imgs = r.map(function (img) {
-      return img.secure_url;
-    });
+
+
+    // register auth route conflet with upload multiple images for a product
+
+    if(req.file) {
+      req.body.img = req.body.img = r[0].secure_url
+    }
+    if(req.files){
+      req.body.img = r.map(function (img) {
+        return img.secure_url;
+      });
+    }
+
+
+    
     next();
   } catch (error) {
     return res.status(500).json({ error: error.message });
