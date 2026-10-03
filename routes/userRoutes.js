@@ -17,33 +17,31 @@ userAuthRoutes.post(
   multerUplaoder.single("img"),
   uploadToCloudinary,
   validationRegister,
-  async function (req, res) {
-    try {
-      await appendUserInDatabase(req, res);
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  },
+  appendUserInDatabase,
 );
 
 // verify Account
 
 // login
-userAuthRoutes.post('/login' , validationLogin , isValideAccount,  function(req, res) {
-  try{
-    let token  = generateToken({UID: req.body.userId}, "15")
-   res.cookie("access-token",token ,  {
-     maxAge: 900000, // 15 minutes
-     httpOnly: true, // Sécurisé contre XSS
-     secure: true, // HTTPS uniquement
-     sameSite: "strict", // Protection CSRF
-   });
-   return res.status(200).json({token})
-  }catch(error) {
-    return res.status(500).json({error: error.message})
-  }
-})
- 
+userAuthRoutes.post(
+  "/login",
+  validationLogin,
+  isValideAccount,
+  async function (req, res) {
+    try {
+      let token = generateToken({ UID: req.body.userId }, "15m");
+      res.cookie("access-token", token, {
+        maxAge: 900000, // 15 minutes
+        httpOnly: true, // Sécurisé contre XSS
+        secure: true, // HTTPS uniquement
+        sameSite: "strict", // Protection CSRF
+      });
+      return res.status(200).json({ token });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+);
 
 // update Account Claims
 

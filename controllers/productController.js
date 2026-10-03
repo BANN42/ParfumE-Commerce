@@ -16,23 +16,20 @@ export async function createProduct(req, res) {
 
 export async function getProducts(req, res) {
   try {
-    let pg = req.query.page;
-    let lmt = req.query.limit;
-    let [page, limit, skip] = FrontPagination(pg, lmt);
+    const [page, limit, skip] = FrontPagination(
+      req.query.page,
+      req.query.limit,
+    );
 
-    Promise.all([
+    const [nbDocuments, targetProducts] = await Promise.all([
       Product.countDocuments(),
       Product.find().skip(skip).limit(limit),
-    ])
-      .then(function ([nbDocuments, targetProducts]) {
-        let totalPages = Math.ceil(nbDocuments / limit);
-        return res
-          .status(200)
-          .json({ targetProducts, page, totalPages, nbDocuments });
-      })
-      .catch(function (error) {
-        return res.status(500).json({ error: error.message });
-      });
+    ]);
+    const totalPages = Math.ceil(nbDocuments / limit);
+
+    return res
+      .status(200)
+      .json({ targetProducts, page, totalPages, nbDocuments });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

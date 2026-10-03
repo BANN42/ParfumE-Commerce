@@ -1,28 +1,22 @@
-import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
-config()
+import { verifyToken } from "../utils/generateToken.js";
 
-let SECRET_KEY = process.env.SECRET_key;
+export function checkUserHasAValideToken(req, res, next) {
+  const authorization = req.headers.authorization;
+  const token = authorization?.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length)
+    : null;
 
-/*
-  Handle Token 
-  create AccessToken / token if not exists
-  create RefreshToken
-  // check the token expirency
-  if the token is invalide or expired refresh the token or let the user sing in again (Login)
-*/
+  if (!token) {
+    return res.status(401).json({ error: "Authentication token required" });
+  }
 
-
-import generateToken from "../utils/generateToken";
-
-
-
-
-function hasValideToken(req, res, next) {
-  try{
-    
-  }catch(error) {
-    return res.status(500).json({error : error.message});
+  try {
+    req.user = verifyToken(token);
+    return next();
+  } catch {
+    return res.status(401).json({ error: "Invalid or expired token" });
   }
 }
+
+export const hasValideToken = checkUserHasAValideToken;
 

@@ -17,14 +17,13 @@ let verifylogin = loginSchemaValidator(loginSchema);
 
 export function validationLogin(req, res, next) {
   try {
-    let { error } = verifylogin(req.body);
+    let { email, password } = req.body;
+    let { error } = verifylogin({ email, password });
     if (error) {
-      
       return res.status(400).json({ error: error.message });
     }
     next();
   } catch (error) {
-    console.log("first");
     return res.status(500).json({ error: error.message });
   }
 }
