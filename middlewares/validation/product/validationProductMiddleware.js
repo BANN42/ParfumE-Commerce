@@ -1,15 +1,4 @@
-  
-import {  productValidationCreateMultipleImages } from "../../utils/ProductValidation.js";
-
-
-
-
-
-
-
-
-
-
+import { productValidationCreateMultipleImages } from "../../../utils/productValidation.js";
 
 export function validationProductMultipleImages(req, res, next) {
   try {
@@ -24,3 +13,4 @@ export function validationProductMultipleImages(req, res, next) {
   }
 }
 
+// this Module ??

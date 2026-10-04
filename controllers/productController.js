@@ -1,19 +1,25 @@
 import Product from "../models/Product.js";
 import { FrontPagination } from "../utils/pagination.js";
-import { productValidationUpdating } from "../utils/ProductValidation.js";
 
+/*
+ * Add New Product
+*/
 export async function createProduct(req, res) {
   try {
-    let currentClient = new Product(req.body);
-    await currentClient.save();
+    let product = new Product(req.body);
+    await product.save();
     return res
       .status(201)
-      .json({ message: "Product Has Been Added ...", ID: currentClient._id });
+      .json({ message: "product has Been Created" , product_id : product._id });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
 
+
+/*
+ * retreive all Products
+*/
 export async function getProducts(req, res) {
   try {
     const [page, limit, skip] = FrontPagination(
@@ -56,16 +62,18 @@ export async function updateProductById(req, res) {
     let targetProduct = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
+      {
+        new: true,
+        runValidators: true,
+      },
     );
     if (!targetProduct) {
       return res.status(404).json({ message: "Product Is Unknown..." });
     }
-    return res
-      .status(200)
-      .json({
-        message: "The Product Has Been Updated Successfuly",
-        productID: targetProduct._id,
-      });
+    return res.status(200).json({
+      message: "The Product Has Been Updated Successfuly",
+      productID: targetProduct._id,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

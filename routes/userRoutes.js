@@ -1,12 +1,12 @@
 import express from "express";
-import validationRegister from "../middlewares/validation/validationRegister.js";
+import validationRegister from "../middlewares/validation/user/validationRegister.js";
 import { appendUserInDatabase } from "../controllers/userController.js";
-import multerUplaoder from "../middlewares/multerUploader.js";
-import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
-import { isValideAccount } from "../middlewares/isValideAccount.js";
-import { validationLogin } from "../middlewares/validationLogin.js";
+import multerUplaoder from "../middlewares/upload/multerUploader.js";
+import uploadToCloudinary from "../middlewares/upload/uploadToCloudinary.js";
+import { isValideAccount } from "../middlewares/auth/isValideAccount.js";
 import generateToken from "../utils/generateToken.js";
-import { dd } from "../middlewares/dd.js";
+import { validationLogin } from "../middlewares/validation/user/validationLogin.js";
+import { checkUserIsAuthenticated } from "../middlewares/auth/protect.js";
 
 const userAuthRoutes = express.Router();
 
@@ -18,7 +18,7 @@ userAuthRoutes.post(
   uploadToCloudinary,
   validationRegister,
   appendUserInDatabase,
-);
+); 
 
 // verify Account
 
@@ -43,8 +43,14 @@ userAuthRoutes.post(
   },
 );
 
+
+
+userAuthRoutes.post('/test', checkUserIsAuthenticated ,  function(req, res) {
+  return res.status(200).json({message: "All Good"})
+})
 // update Account Claims
 
 // logout
 
 export default userAuthRoutes;
+ 

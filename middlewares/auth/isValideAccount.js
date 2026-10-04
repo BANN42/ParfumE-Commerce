@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import bcrypt from "bcryptjs";
 
 export async function isValideAccount(req, res, next) {
@@ -22,3 +22,4 @@ export async function isValideAccount(req, res, next) {
     return res.status(500).json({ error: error.message });
   }
 }
+ 

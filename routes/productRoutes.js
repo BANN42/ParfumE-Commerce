@@ -1,5 +1,5 @@
 import express from "express";
-import { validationProductMultipleImages } from "../middlewares/validation/validationProductMiddleware.js";
+import { validationProductMultipleImages } from "../middlewares/validation/product/validationProductMiddleware.js";
 import {
   createProduct,
   deleteProductById,
@@ -8,10 +8,10 @@ import {
   updateProductById,
 } from "../controllers/productController.js";
 
-import { validationProductUpdate } from "../middlewares/validation/validationProductUpdate.js";
+import { validationProductUpdate } from "../middlewares/validation/product/validationProductUpload.js";
 import { isValideId } from "../middlewares/isValideId.js";
-import multerUplaoder from "../middlewares/multerUploader.js";
-import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
+import multerUplaoder from "../middlewares/upload/multerUploader.js";
+import uploadToCloudinary from "../middlewares/upload/uploadToCloudinary.js";
 
 const productRoutes = express.Router();
 
