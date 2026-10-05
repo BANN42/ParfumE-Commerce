@@ -3,7 +3,7 @@ import Cloudinary from "../../config/cloudinary.js";
 async function uploadToCloudinary(req, res, next) {
   try {
     let files = [];
-    if (!req.file && (!req.files || req.files.length === 0)) {
+    if (!req.file && !req.files) {
       return res.status(400).json({ error: "Image/s Not Provided ..." });
     }
 

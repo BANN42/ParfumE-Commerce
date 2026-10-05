@@ -18,7 +18,7 @@ userAuthRoutes.post(
   uploadToCloudinary,
   validationRegister,
   appendUserInDatabase,
-); 
+);
 
 // verify Account
 
@@ -29,7 +29,10 @@ userAuthRoutes.post(
   isValideAccount,
   async function (req, res) {
     try {
-      let token = generateToken({ UID: req.body.userId }, "15m");
+      let token = generateToken(
+        { UID: req.body.userId, role: req.body.role },
+        "15m",
+      );
       res.cookie("access-token", token, {
         maxAge: 900000, // 15 minutes
         httpOnly: true, // Sécurisé contre XSS
@@ -43,14 +46,11 @@ userAuthRoutes.post(
   },
 );
 
-
-
-userAuthRoutes.post('/test', checkUserIsAuthenticated ,  function(req, res) {
-  return res.status(200).json({message: "All Good"})
-})
+userAuthRoutes.post("/test", checkUserIsAuthenticated, function (req, res) {
+  return res.status(200).json({ message: "All Good" });
+});
 // update Account Claims
 
 // logout
 
 export default userAuthRoutes;
- 

@@ -11,6 +11,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/Auth/user", userAuthRoutes);
+                app.use("/api/v1/Auth/users", userAuthRoutes);
 
 export default app;

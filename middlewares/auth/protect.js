@@ -5,13 +5,13 @@ config();
 export async function checkUserIsAuthenticated(req, res, next) {
   try {
     // has header or not
-    if (!req.headers.Authorization) {
+    if (!req.headers.authorization) {
       return res
         .status(401)
         .json({ error: "No Token included at the header " });
     }
     // user is authenticated when he has a valide token stored
-    let token = req.headers.Authorization.split("Bearer ")[1];
+    let token = req.headers.authorization.split("Bearer ")[1];
 
     if (!token) {
       return res.status(401).json({ error: "Token Is Invalide Or Expired ." });

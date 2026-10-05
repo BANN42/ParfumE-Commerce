@@ -12,6 +12,8 @@ import { validationProductUpdate } from "../middlewares/validation/product/valid
 import { isValideId } from "../middlewares/isValideId.js";
 import multerUplaoder from "../middlewares/upload/multerUploader.js";
 import uploadToCloudinary from "../middlewares/upload/uploadToCloudinary.js";
+import { checkUserIsAuthenticated } from "../middlewares/auth/protect.js";
+import { isAdmin } from "../middlewares/auth/isAdmin.js";
 
 const productRoutes = express.Router();
 
@@ -24,6 +26,8 @@ const productRoutes = express.Router();
 
 productRoutes.post(
   "/add-product",
+  checkUserIsAuthenticated,
+  isAdmin,// 
   multerUplaoder.array("imgs", 8),
   uploadToCloudinary,
   validationProductMultipleImages,

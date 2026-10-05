@@ -17,9 +17,9 @@ export async function isValideAccount(req, res, next) {
       return res.status(400).json({ error: "Password/ Email incorrect ." });
     }
     req.body.userId = targetUser._id; // just want to add this property into the request header
+    req.body.role = targetUser.role;
     return next();
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
- 

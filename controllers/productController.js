@@ -6,7 +6,8 @@ import { FrontPagination } from "../utils/pagination.js";
 */
 export async function createProduct(req, res) {
   try {
-    let product = new Product(req.body);
+      
+    let product = new Product({...req.body});
     await product.save();
     return res
       .status(201)
