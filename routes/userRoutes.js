@@ -10,8 +10,11 @@ import { checkUserIsAuthenticated } from "../middlewares/auth/protect.js";
 
 const userAuthRoutes = express.Router();
 
-// register
-
+/*
+  * route : /register
+  * accessiblity : public
+  * method : POST
+*/
 userAuthRoutes.post(
   "/register",
   multerUplaoder.single("img"),
@@ -21,7 +24,7 @@ userAuthRoutes.post(
 );
 
 // verify Account
-
+ 
 // login
 userAuthRoutes.post(
   "/login",
@@ -46,9 +49,7 @@ userAuthRoutes.post(
   },
 );
 
-userAuthRoutes.post("/test", checkUserIsAuthenticated, function (req, res) {
-  return res.status(200).json({ message: "All Good" });
-});
+
 // update Account Claims
 
 // logout
