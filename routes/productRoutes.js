@@ -19,7 +19,7 @@ const productRoutes = express.Router();
 
 /*
  * Method : POST
- * Desc : add New Parfum
+ * Desc : add New product
  * Accessbility : Public
  * URL : /add-product
  */
@@ -27,7 +27,7 @@ const productRoutes = express.Router();
 productRoutes.post(
   "/add-product",
   checkUserIsAuthenticated,
-  isAdmin,// 
+  isAdmin, //
   multerUplaoder.array("imgs", 8),
   uploadToCloudinary,
   validationProductMultipleImages,
