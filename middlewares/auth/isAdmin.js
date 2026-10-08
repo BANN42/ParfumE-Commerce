@@ -1,15 +1,16 @@
-export function isAdmin(req, res, next) {
+import User from "../../models/User.js";
+
+export async function isAdmin(req, res, next) {
   try {
-    // check the admin athentication
-    // let {UID, role} = req.cookies;
-    // if(role.toLowerCase() === 'admin' && isAdminUID(UID) ){
-    //     return next();
-    // }
-    if(req.role === "admin") {
-        return next()
+    if (!req?.userId) {
+      return res.status(500).json({ error: "userId is Invalid .." });
     }
-    return res.status(403).json({error: "Admin Only ..."});
-    // redirect back not showing anything like any message( is admin or 'admin Only' ...etc)
+    let Id = req.userId;
+    let isAdmin = await User.findById(Id);
+    if (isAdmin.role.toLowerCase() === "admin") {
+      return next();
+    }
+    return res.status(403).json({ error: "Admin Only ..." });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

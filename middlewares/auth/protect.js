@@ -12,9 +12,9 @@ export function checkUserIsAuthenticated(req, res, next) {
     }
 
     let token = authorization.split(" ")[1]?.trim();
-    let decode = jwt.verify(token, process.env.SECRET_key)
+    let decode = jwt.verify(token, process.env.SECRET_key);
     req.userId = decode.UID;
-    return next()
+    return next();
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }
