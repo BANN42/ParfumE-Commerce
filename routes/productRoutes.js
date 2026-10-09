@@ -27,7 +27,7 @@ const productRoutes = express.Router();
 productRoutes.post(
   "/add-product",
   checkUserIsAuthenticated,
-  isAdmin, //
+  isAdmin, 
   multerUplaoder.array("imgs", 8),
   uploadToCloudinary,
   validationProductMultipleImages,

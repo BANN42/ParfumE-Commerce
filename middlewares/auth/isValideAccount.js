@@ -1,5 +1,5 @@
-import User from "../../models/User.js";
 import bcrypt from "bcryptjs";
+import User from "../../models/User.js";
 
 export async function isValideAccount(req, res, next) {
   try {
@@ -16,8 +16,7 @@ export async function isValideAccount(req, res, next) {
     if (!isTheSamePassword) {
       return res.status(400).json({ error: "Password/ Email incorrect ." });
     }
-    req.body.userId = targetUser._id; // just want to add this property into the request header
-    req.body.role = targetUser.role;
+    req.userId = targetUser._id;
     return next();
   } catch (error) {
     return res.status(500).json({ error: error.message });
