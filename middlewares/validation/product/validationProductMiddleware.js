@@ -13,4 +13,3 @@ export function validationProductMultipleImages(req, res, next) {
   }
 }
 
-// this Module ??

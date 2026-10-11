@@ -7,8 +7,10 @@ export async function isAdmin(req, res, next) {
     }
     let Id = req.userId;
     let isAdmin = await User.findById(Id);
-    if(!isAdmin){
-      return res.status(404).json({error : "Id Not Found (check Id is valide)"})
+    if (!isAdmin) {
+      return res
+        .status(404)
+        .json({ error: "Id Not Found (check Id is valide)" });
     }
     if (isAdmin.role?.toLowerCase() === "admin") {
       return next();

@@ -20,14 +20,14 @@ const productRoutes = express.Router();
 /*
  * Method : POST
  * Desc : add New product
- * Accessbility : Public
+ * Accessbility : Pivate
  * URL : /add-product
  */
 
 productRoutes.post(
   "/add-product",
   checkUserIsAuthenticated,
-  isAdmin, 
+  isAdmin,
   multerUplaoder.array("imgs", 8),
   uploadToCloudinary,
   validationProductMultipleImages,
@@ -45,7 +45,7 @@ productRoutes.get("/all-products", getProducts);
 
 /*
  * Method : GET
- * Desc : get Parfum By id
+ * Desc : get Product By id
  * Accessbility : Public
  * URL : /:id
  */
@@ -53,19 +53,36 @@ productRoutes.get("/all-products", getProducts);
 productRoutes.get("/:id", isValideId, getProductById);
 
 /*
- * Method : POST
+ * Method : PUT
  * Desc : Update ProductByID
- * Accessbility : Public
+ * Accessbility : Private
  * URL : /:id
  */
 
 productRoutes.put(
   "/:id",
+  checkUserIsAuthenticated,
+  isAdmin,
   isValideId,
+  multerUplaoder.array("imgs", 8),
+  uploadToCloudinary,
   validationProductUpdate,
   updateProductById,
 );
 
-productRoutes.delete("/:id", isValideId, deleteProductById);
+/*
+ * Method : POST
+ * Desc : Delete product By Id
+ * Accessbility : Private
+ * URL : /:id
+ */
+
+productRoutes.delete(
+  "/:id",
+  checkUserIsAuthenticated,
+  isAdmin,
+  isValideId,
+  deleteProductById,
+);
 
 export default productRoutes;

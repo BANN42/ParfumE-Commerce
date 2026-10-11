@@ -11,7 +11,7 @@ export let productValidationUpdating = function (objectBody) {
       category: Joi.string().valid("Male", "Female", "Mixte"),
       volume: Joi.number(),
       stock: Joi.number(),
-      imgs: Joi.array().items(Joi.string()).required(), 
+      imgs: Joi.array().items(Joi.string()), 
     }).validate(objectBody, {
       abortEarly: false,
     });
