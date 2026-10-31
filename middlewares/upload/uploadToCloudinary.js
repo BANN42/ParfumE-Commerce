@@ -3,7 +3,7 @@ import Cloudinary from "../../config/cloudinary.js";
 async function uploadToCloudinary(req, res, next) {
   try {
     if (!req.file && (!req.files || req.files.length === 0)) {
-      return res.status(400).json({ error: "Image/s Not Provided ..." });
+      return res.status(400).json({ error: "Must Provide The Image" });
     }
 
     let files = [];
@@ -35,7 +35,7 @@ async function uploadToCloudinary(req, res, next) {
     // register auth route conflet with upload multiple images for a product
 
     if (req.file) {
-      req.body.img = r[0].secure_url;
+      req.body.img = r[0].secure_url; 
     }
     if (req.files) {
       req.body.imgs = r.map(function (img) {
@@ -45,7 +45,7 @@ async function uploadToCloudinary(req, res, next) {
 
     next();
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: "Uploading Failled , Please Try Again." });
   }
 }
 

@@ -14,7 +14,9 @@ const userSchema = Joi.object({
     }
     return true;
   }), // need to be greater than 18yo,
-  phone: Joi.string().required(),
+  phone: Joi.string()
+    .regex(/^(?:0[67]\d{8}|\+212[67]\d{8})$/)
+    .required(),
   isVerified: Joi.boolean().default(false),
   gender: Joi.string().valid("Male", "Female"),
   img: Joi.string().required(),
@@ -29,3 +31,4 @@ export const userSchemaValidator = (userSchema) => {
 };
 
 export const userRegisterValidator = userSchemaValidator(userSchema);
+

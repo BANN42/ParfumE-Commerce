@@ -1,6 +1,9 @@
+import { fileTypeFromBuffer } from "file-type";
 import multer from "multer";
 
-let storage = multer.memoryStorage(); // keep the mime as a buffer In RAM
+
+
+let storage = multer.memoryStorage();
 let multerUplaoder = multer({
   storage: storage,
   limits: {

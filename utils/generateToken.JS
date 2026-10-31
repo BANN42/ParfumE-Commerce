@@ -11,5 +11,5 @@ function generateToken(payload, expiresIn, algorithm = "HS256") {
 export function verifyToken(token) {
   return jwt.verify(token, SECRET_KEY);
 }
-
+ 
 export default generateToken;

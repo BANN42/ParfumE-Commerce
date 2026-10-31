@@ -7,7 +7,7 @@ export function checkUserIsAuthenticated(req, res, next) {
     let authorization = req.headers.authorization;
     if (!authorization?.startsWith("Bearer ")) {
       return res.status(401).json({
-        error: "authorization Header is Empty Or Unformade (No Token Provided)",
+        error: "No Authorized action must Login First",
       });
     }
 

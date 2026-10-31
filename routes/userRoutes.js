@@ -7,6 +7,12 @@ import multerUplaoder from "../middlewares/upload/multerUploader.js";
 import uploadToCloudinary from "../middlewares/upload/uploadToCloudinary.js";
 import { isValideAccount } from "../middlewares/auth/isValideAccount.js";
 import { validationLogin } from "../middlewares/validation/user/validationLogin.js";
+import validationImageMemeType from "../middlewares/validateImgMEMEtype.js";
+import { verifyOtp } from "../middlewares/validation/user/verifyOtp.js";
+import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
+import User from "../models/User.js";
+import { config } from "dotenv";
+config();
 
 
 
@@ -14,23 +20,60 @@ import { validationLogin } from "../middlewares/validation/user/validationLogin.
 const userAuthRoutes = express.Router();
 
 /*
- * route : /register
- * accessiblity : public
- * method : POST
+ * @route : /register
+ * @desc : create new account
+ * @accessiblity : public
+ * @method : POST
  */
 userAuthRoutes.post(
   "/register",
   multerUplaoder.single("img"),
+  validationImageMemeType,
   uploadToCloudinary,
   validationRegister,
   Register,
 );
 
+
+
 // verify Account
+userAuthRoutes.post("/verify-otp", verifyOtp, function (req, res) {
+  return res.status(200).json({ message: "OTP is Correct" });
+});
 
-// login
+
+
+userAuthRoutes.post(
+  "/resend-otp",
+  async function (req, res, next) {
+    let otpCode = generateOTP();
+    let user = await User.findById(req.session.userId);
+    await EmailTransporter().sendMail({
+      from: process.env.NodeMailer_MAIL,
+      to: user.email,
+      subject: "Verification OTP Number",
+      text: `Your OTP code is ${otpCode}`,
+    });
+    
+    user.otp = otpCode;
+    await user.save();
+
+    next();
+  },
+  function (req, res) {
+    return res.status(200).json({ message: "The OTP has been resended" });
+  },
+);
+
+// resent OTP code
+
+/*
+ * @route : /login
+ * @desc : login into my account
+ * @accessiblity : public
+ * @method : POST
+ */
 userAuthRoutes.post("/login", validationLogin, isValideAccount, Login);
-
 // update Account Claims
 
 // logout

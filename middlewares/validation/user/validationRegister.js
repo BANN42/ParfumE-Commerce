@@ -1,7 +1,5 @@
 import { userRegisterValidator } from "../../../utils/validationUserSchema.js";
 
-userRegisterValidator;
-
 export default function validationRegister(req, res, next) {
   try {
     let { error } = userRegisterValidator(req.body);
@@ -10,7 +8,8 @@ export default function validationRegister(req, res, next) {
     }
     next();
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res
+      .status(500)
+      .json({ error: "Failed To Parse Incoming Request Please Try Again." });
   }
 }
- 
