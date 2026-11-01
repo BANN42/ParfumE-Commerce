@@ -6,10 +6,8 @@ export default function validationRegister(req, res, next) {
     if (error) {
       return res.status(400).json({ error: error.message });
     }
-    next();
+    return next();
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Failed To Parse Incoming Request Please Try Again." });
+    return next(error);
   }
 }

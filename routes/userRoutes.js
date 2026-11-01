@@ -12,10 +12,8 @@ import { verifyOtp } from "../middlewares/validation/user/verifyOtp.js";
 import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
 import User from "../models/User.js";
 import { config } from "dotenv";
+import { sendOtpMail } from "../middlewares/validation/user/sendOtpMail.js";
 config();
-
-
-
 
 const userAuthRoutes = express.Router();
 
@@ -29,19 +27,16 @@ userAuthRoutes.post(
   "/register",
   multerUplaoder.single("img"),
   validationImageMemeType,
-  uploadToCloudinary,
   validationRegister,
+  uploadToCloudinary,
   Register,
+  sendOtpMail,
 );
-
-
 
 // verify Account
 userAuthRoutes.post("/verify-otp", verifyOtp, function (req, res) {
   return res.status(200).json({ message: "OTP is Correct" });
 });
-
-
 
 userAuthRoutes.post(
   "/resend-otp",
@@ -54,7 +49,7 @@ userAuthRoutes.post(
       subject: "Verification OTP Number",
       text: `Your OTP code is ${otpCode}`,
     });
-    
+
     user.otp = otpCode;
     await user.save();
 

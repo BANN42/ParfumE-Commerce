@@ -2,7 +2,10 @@ import Product from "../models/Product.js";
 import { FrontPagination } from "../utils/pagination.js";
 
 /*
- * Add New Product
+ * @url  : /add Product
+ * @desc : Append new Product
+ * @visability : Public
+ * @method : POST
 */
 export async function createProduct(req, res) {
   try { 

@@ -1,16 +1,10 @@
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
-
+import { randomInt } from "node:crypto";
 config();
 
 export function generateOTP() {
-  let otp;
-  while (true) {
-    otp = Math.ceil(Math.random() * 1_000_000);
-    if (otp.toString().length === 6) {
-      return otp;
-    }
-  }
+  return randomInt(100_000 , 999_999);
 }
 
 // create email transporter

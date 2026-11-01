@@ -7,6 +7,7 @@ import userAuthRoutes from "./routes/userRoutes.js";
 import passport, { strategies, Strategy } from "passport";
 import session, { Session } from "express-session";
 import { config } from "dotenv";
+import errorHandler from "./middlewares/errorHandler.js";
 config();
 
 const app = express();
@@ -18,23 +19,27 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SECRET_key,
+    saveUninitialized: true,
+    resave: true,
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       collectionName: "sessions",
       ttl: 8 * 24 * 60 * 60,
-      autoRemove : 'native'
+      autoRemove: "native",
     }),
     rolling: true,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite : "lax"
+      sameSite: "lax",
     },
   }),
 );
 
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/Auth/users", userAuthRoutes);
+
+app.use(errorHandler);
 
 export default app;

@@ -4,16 +4,13 @@ import generateToken from "../utils/generateToken.js";
 import { config } from "dotenv";
 config();
 
-const AboutToken = {
-  tokenMaxAge: 900000,
-};
-
 /*
  * Route Handler (Register)
  *
  *
  */
-export async function Register(req, res) {
+
+export async function Register(req, res, next) {
   try {
     let otpCode = generateOTP();
     let { username, email, password, birthday, phone, gender, img } = req.body;
@@ -27,21 +24,23 @@ export async function Register(req, res) {
       img,
       otp: String(otpCode),
     });
-
     await user.save();
 
-    await EmailTransporter().sendMail({
-      from: process.env.NodeMailer_MAIL,
-      to: user.email,
-      subject: "Verification OTP Number",
-      text: `Your OTP code is ${otpCode}`,
-    });
-    req.session.userId = user._id;
-    return res.status(201).json({ message: "The User Has Been Created" });
+    
+    // await EmailTransporter()
+    //   .sendMail({
+    //     from: process.env.NodeMailer_MAIL,
+    //     to: user.email,
+    //     subject: "Verification OTP Number",
+    //     text: `Your OTP code is ${otpCode}`,
+    //   })
+
+    req.userId = user._id;
+    // req.session.userId = user._id;
+
+    next();
   } catch (error) {
-    return res.status(409).json({
-      error: `The ${Object.keys(error.keyPattern)[0]} is Already In Use`,
-    });
+    return next(error);
   }
 }
 
@@ -55,15 +54,18 @@ export async function Login(req, res) {
   try {
     let token = generateToken({ UID: req.userId }, "15m");
     res.cookie("token", token, {
-      maxAge: 900000, // 15 minutes
-      httpOnly: true, // Sécurisé contre XSS
-      secure: true, // HTTPS uniquement
-      sameSite: "strict", // Protection CSRF
+      maxAge: 900000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
     });
     return res.status(200).json({ token });
   } catch (error) {
     return res
       .status(500)
-      .json({ error: "Internal Server Error,Please Try ag" });
+      .json({ error: "Internal Server Error,Please Try again" });
   }
 }
+
+// this is route handler is only for sending messages
+

@@ -16,6 +16,8 @@ export function checkUserIsAuthenticated(req, res, next) {
     req.userId = decode.UID;
     return next();
   } catch (error) {
-    return res.status(401).json({ error: error.message });
+    return res
+      .status(500)
+      .json({ error: "An Error Occured While validation of The Token" });
   }
 }
