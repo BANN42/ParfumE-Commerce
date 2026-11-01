@@ -2,7 +2,7 @@ import User from "../../../models/User.js";
 
 export async function verifyOtp(req, res, next) {
   try {
-    let userId = req.session.userId;
+    let userId =   req.userId;
     let { otpCode } = req.body;
     if (!userId)
       return res

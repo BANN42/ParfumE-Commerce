@@ -13,6 +13,7 @@ import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
 import User from "../models/User.js";
 import { config } from "dotenv";
 import { sendOtpMail } from "../middlewares/validation/user/sendOtpMail.js";
+import { isVerifiedAccount } from "../middlewares/validation/user/isVerifiedAccount.js";
 config();
 
 const userAuthRoutes = express.Router();
@@ -33,7 +34,12 @@ userAuthRoutes.post(
   sendOtpMail,
 );
 
-// verify Account
+/*
+ * @Method : POST
+ * @visibilty : Protected
+ * @desc : send the OTP 6 digits
+ * @route : /verify-otp
+*/
 userAuthRoutes.post("/verify-otp", verifyOtp, function (req, res) {
   return res.status(200).json({ message: "OTP is Correct" });
 });
@@ -68,7 +74,7 @@ userAuthRoutes.post(
  * @accessiblity : public
  * @method : POST
  */
-userAuthRoutes.post("/login", validationLogin, isValideAccount, Login);
+userAuthRoutes.post("/login",validationLogin,isValideAccount,isVerifiedAccount ,   Login);
 // update Account Claims
 
 // logout

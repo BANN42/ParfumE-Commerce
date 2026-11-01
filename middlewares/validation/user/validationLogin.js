@@ -24,6 +24,6 @@ export function validationLogin(req, res, next) {
     }
     next();
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error)
   }
 }

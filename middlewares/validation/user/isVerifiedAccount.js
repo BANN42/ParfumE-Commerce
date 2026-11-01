@@ -1,15 +1,27 @@
-function isVerifiedAccount(req, res, next) {
+import User from "../../../models/User.js";
+import { EmailerSender, generateOTP } from "../../../utils/generateOTP.js";
+
+export async function isVerifiedAccount(req, res, next) {
   try {
-    let userId = req.session.userId;
-    if (!userId) return res.status(403).json({ error: "You Must" });
+    let {  isVerified, email } = await User.findById(req.userId);
+
+    if (!isVerified) {
+      
+      let otp = generateOTP();
+      await EmailerSender(
+        process.env.NodeMailer_MAIL,
+        email,
+        "Verification OTP Number",
+        `The OTP Number is ${otp}`,
+      );
+      res.userId = req.userId
+      return res.status(403).json({
+        message: "Please Verify Your Account First Check The Email for OTP",
+      });
+    }
+
+    return next();
   } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });
+    return next(error);
   }
 }
-
-
-
-// check the account is verified
-// check the session is not expired otherwise should have a way to initialze it look more about enhance register . otp . verification phase
-// then move to loggin
-// optimize the code which already in use .
