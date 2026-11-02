@@ -12,9 +12,11 @@ import { verifyOtp } from "../middlewares/validation/user/verifyOtp.js";
 import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
 import User from "../models/User.js";
 import { config } from "dotenv";
-import { sendOtpMail } from "../middlewares/validation/user/sendOtpMail.js";
 import { isVerifiedAccount } from "../middlewares/validation/user/isVerifiedAccount.js";
+import { verifyOTPType } from "../middlewares/verifyOTPType.js";
 config();
+
+const Node_Mailer = process.env.NodeMailer_MAIL;
 
 const userAuthRoutes = express.Router();
 
@@ -31,7 +33,6 @@ userAuthRoutes.post(
   validationRegister,
   uploadToCloudinary,
   Register,
-  sendOtpMail,
 );
 
 /*
@@ -39,8 +40,8 @@ userAuthRoutes.post(
  * @visibilty : Protected
  * @desc : send the OTP 6 digits
  * @route : /verify-otp
-*/
-userAuthRoutes.post("/verify-otp", verifyOtp, function (req, res) {
+ */
+userAuthRoutes.post("/verify-otp",verifyOTPType,  verifyOtp, function (req, res) {
   return res.status(200).json({ message: "OTP is Correct" });
 });
 
@@ -48,17 +49,18 @@ userAuthRoutes.post(
   "/resend-otp",
   async function (req, res, next) {
     let otpCode = generateOTP();
-    let user = await User.findById(req.session.userId);
+    let { email } = req.body;
+    let user = await User.findOne({ email: email });
+    if (!user) return res.status(400).json({ error: "The Email Not Found" });
     await EmailTransporter().sendMail({
-      from: process.env.NodeMailer_MAIL,
+      from: Node_Mailer,
       to: user.email,
       subject: "Verification OTP Number",
       text: `Your OTP code is ${otpCode}`,
     });
-
     user.otp = otpCode;
+    user.otpAge = () => String(Date.now() + 10 * 60 * 1000);
     await user.save();
-
     next();
   },
   function (req, res) {
@@ -74,7 +76,13 @@ userAuthRoutes.post(
  * @accessiblity : public
  * @method : POST
  */
-userAuthRoutes.post("/login",validationLogin,isValideAccount,isVerifiedAccount ,   Login);
+userAuthRoutes.post(
+  "/login",
+  validationLogin,
+  isValideAccount,
+  isVerifiedAccount,
+  Login,
+);
 // update Account Claims
 
 // logout

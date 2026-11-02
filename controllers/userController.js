@@ -11,37 +11,46 @@ config();
  */
 
 export async function Register(req, res, next) {
+  let otpCode = generateOTP();
+  let { username, email, password, birthday, phone, gender, img } = req.body;
+  let user = new User({
+    username,
+    email,
+    password,
+    birthday,
+    phone,
+    gender,
+    img,
+    otp: String(otpCode),
+  });
+
   try {
-    let otpCode = generateOTP();
-    let { username, email, password, birthday, phone, gender, img } = req.body;
-    let user = new User({
-      username,
-      email,
-      password,
-      birthday,
-      phone,
-      gender,
-      img,
-      otp: String(otpCode),
-    });
     await user.save();
-
-    
-    // await EmailTransporter()
-    //   .sendMail({
-    //     from: process.env.NodeMailer_MAIL,
-    //     to: user.email,
-    //     subject: "Verification OTP Number",
-    //     text: `Your OTP code is ${otpCode}`,
-    //   })
-
-    req.userId = user._id;
-    // req.session.userId = user._id;
-
-    next();
   } catch (error) {
-    return next(error);
+    next(error);
   }
+
+  try {
+    await EmailTransporter().sendMail({
+      from: process.env.NodeMailer_MAIL,
+      to: user.email,
+      subject: "Verification OTP Number",
+      text: `Your OTP code is ${otpCode}`,
+    });
+  } catch (error) {
+    return res.status(503).json({
+      message:
+        "Account created, but OTP delivery failed. Please request another OTP.",
+      userId: user._id,
+    });
+  }
+
+ 
+
+  return res.status(201).json({
+    message: "User created. Please verify your email.",
+    userId: user._id,
+  });
 }
 
 /*
@@ -68,4 +77,3 @@ export async function Login(req, res) {
 }
 
 // this is route handler is only for sending messages
-
