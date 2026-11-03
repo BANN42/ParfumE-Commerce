@@ -26,7 +26,9 @@
     "multer": "^2.4.0",
     "nodemailer": "^10.2.1",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "rate-limit-redis": "^6.0.2",
+    "redis": "^6.3.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

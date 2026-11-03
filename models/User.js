@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema({
   img: {
     type: String,
   },
+  imgPublicId: {
+    type: String,
+    default: null,
+  },
   otp: {
     type: String,
     default: null,

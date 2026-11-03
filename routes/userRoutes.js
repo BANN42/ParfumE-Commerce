@@ -1,6 +1,12 @@
 import express from "express";
 
-import { Login, Register } from "../controllers/userController.js";
+import {
+  Login,
+  Profile,
+  Register,
+  UpdateProfile,
+  UpdateProfileImage,
+} from "../controllers/userController.js";
 
 import validationRegister from "../middlewares/validation/user/validationRegister.js";
 import multerUplaoder from "../middlewares/upload/multerUploader.js";
@@ -14,6 +20,13 @@ import User from "../models/User.js";
 import { config } from "dotenv";
 import { isVerifiedAccount } from "../middlewares/validation/user/isVerifiedAccount.js";
 import { verifyOTPType } from "../middlewares/verifyOTPType.js";
+import {
+  loginLimiter,
+  resendOtpLimiter,
+  verifyOtpLimiter,
+} from "../middlewares/security/rateLimiters.js";
+import { checkUserIsAuthenticated } from "../middlewares/auth/protect.js";
+import { validationUpdateProfile } from "../middlewares/validation/user/validationUserSchema.js";
 config();
 
 const Node_Mailer = process.env.NodeMailer_MAIL;
@@ -41,12 +54,25 @@ userAuthRoutes.post(
  * @desc : send the OTP 6 digits
  * @route : /verify-otp
  */
-userAuthRoutes.post("/verify-otp",verifyOTPType,  verifyOtp, function (req, res) {
-  return res.status(200).json({ message: "OTP is Correct" });
-});
+userAuthRoutes.post(
+  "/verify-otp",
+  verifyOtpLimiter,
+  verifyOTPType,
+  verifyOtp,
+  function (req, res) {
+    return res.status(200).json({ message: "OTP is Correct" });
+  },
+);
 
+/*
+ * @desc: resend the Otp code
+ * @method: POST
+ * @access : protected
+ * @route : /resend-otp
+ */
 userAuthRoutes.post(
   "/resend-otp",
+  resendOtpLimiter,
   async function (req, res, next) {
     let otpCode = generateOTP();
     let { email } = req.body;
@@ -59,7 +85,7 @@ userAuthRoutes.post(
       text: `Your OTP code is ${otpCode}`,
     });
     user.otp = otpCode;
-    user.otpAge = () => String(Date.now() + 10 * 60 * 1000);
+    user.otpAge = String(Date.now() + 10 * 60 * 1000);
     await user.save();
     next();
   },
@@ -67,8 +93,6 @@ userAuthRoutes.post(
     return res.status(200).json({ message: "The OTP has been resended" });
   },
 );
-
-// resent OTP code
 
 /*
  * @route : /login
@@ -78,12 +102,44 @@ userAuthRoutes.post(
  */
 userAuthRoutes.post(
   "/login",
+  loginLimiter,
   validationLogin,
   isValideAccount,
   isVerifiedAccount,
   Login,
 );
-// update Account Claims
+
+// profile
+userAuthRoutes.get("/profile", checkUserIsAuthenticated, Profile);
+
+/*
+ * @desc : update user claim/s
+ * @method : POST
+ * @accessiblity : private
+ * @url : /update-claims
+ */
+
+userAuthRoutes.patch(
+  "/update-profile",
+  checkUserIsAuthenticated,
+  validationUpdateProfile,
+  UpdateProfile,
+);
+
+// update profile image
+userAuthRoutes.patch(
+  "/update-photo-profile",
+  checkUserIsAuthenticated,
+  multerUplaoder.single("img"),
+  validationImageMemeType,
+  uploadToCloudinary,
+  UpdateProfileImage,
+);
+// for up how to delete the image from cloudinary the old one.
+
+
+// resset password
+// userAuthRoutes.post('/resset-password');
 
 // logout
 

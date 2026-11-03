@@ -14,7 +14,7 @@ export async function isVerifiedAccount(req, res, next) {
         `The OTP Number is ${otp}`,
       );
       user.otp = otp;
-      user.otpAge = () => String(Date.now() + 10 * 60 * 1000);
+      user.otpAge = String(Date.now() + 10 * 60 * 1000);
       await user.save();
       res.userId = user._id;
       return res.status(403).json({
