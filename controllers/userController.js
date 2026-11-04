@@ -1,3 +1,4 @@
+import { compare, genSalt } from "bcryptjs";
 import User from "../models/User.js";
 import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
 import generateToken from "../utils/generateToken.js";
@@ -143,5 +144,43 @@ export async function UpdateProfileImage(req, res, next) {
     return res
       .status(500)
       .json({ error: "An Error Occured While Changing The USER profile" });
+  }
+}
+
+// update the password
+export async function UpdatePassword(req, res, next) {
+  try {
+    let { currentPassword, newPassword } = req.body;
+    let userId = req.userId;
+    let user = await User.findById(userId);
+    if (!user) return res.status(400).json({ error: "The User Is Not Found" });
+    let isTheSamePassword = await compare(currentPassword, user.password);
+    if (!isTheSamePassword) {
+      return res.status(400).json({ error: "The Password is  Diffrent" });
+    }
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully. " });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong please Try Again " });
+  }
+}
+
+// ================= FORGOT PASSWORD
+export async function ForgotPassword(req, res, next) {
+  try {
+    let { email } = req.body;
+    let user = await User.findOne({ email: email });
+    if (!user) return res.status(404).json({ error: "User Not Found" });
+    // send OTP via email
+    // validation otp
+    // reset otpandmaxage
+    // ask for new password
+    // update password in the database
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }

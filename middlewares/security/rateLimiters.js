@@ -33,3 +33,14 @@ export const resendOtpLimiter = rateLimit({
     message: "Too many OTP requests. Please try again later.",
   },
 });
+
+export const resendEmailForgotPass = rateLimit({
+  windowMs : 10*60*1000,
+  limit : 4,
+  standardHeaders : "draft-8",
+  legacyHeaders : false,
+  skipSuccessfulRequests : true,
+  message :{
+    message : "Too Many Requests Email, Please Try Again Later"
+  }
+})

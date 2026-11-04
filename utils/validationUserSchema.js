@@ -1,5 +1,5 @@
 import Joi from "joi";
-
+// ======================================================= PROFILE SCHEMA MUST BE AT REGISTRATION =======================================================
 const userSchema = Joi.object({
   username: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
@@ -38,7 +38,7 @@ export const userSchemaValidator = (userSchema) => {
 
 export const userRegisterValidator = userSchemaValidator(userSchema);
 
-// update user Schema
+// ========================================================================= UPDATE USER PROFILE CREDENTIALS ================================================
 const updateProfileSchema = Joi.object({
   username: Joi.string().min(3),
   birthday: Joi.date().custom(function (value, helper) {
@@ -71,3 +71,25 @@ export const validateUpdateProfileSchema = (userSchema) => {
 
 export const validateUpdateProfile =
   validateUpdateProfileSchema(updateProfileSchema);
+
+// ============================================================== UPDATE USER PASSWORD ===========================================================
+const passwordValide = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().min(12).required(),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("newPassword"))
+    .required()
+    .messages({
+      "any.only": "The passwords do not match.",
+    }),
+}).unknown(false);
+
+const validationPasswordUpdate = function (valideSchemaUpdate) {
+  return function (payload) {
+    return valideSchemaUpdate.validate(payload, {
+      abortEarly: false,
+    });
+  };
+};
+
+export const validateChangePassword = validationPasswordUpdate(passwordValide);

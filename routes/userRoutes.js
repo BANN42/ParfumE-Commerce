@@ -4,6 +4,7 @@ import {
   Login,
   Profile,
   Register,
+  UpdatePassword,
   UpdateProfile,
   UpdateProfileImage,
 } from "../controllers/userController.js";
@@ -22,11 +23,14 @@ import { isVerifiedAccount } from "../middlewares/validation/user/isVerifiedAcco
 import { verifyOTPType } from "../middlewares/verifyOTPType.js";
 import {
   loginLimiter,
+  resendEmailForgotPass,
   resendOtpLimiter,
   verifyOtpLimiter,
 } from "../middlewares/security/rateLimiters.js";
 import { checkUserIsAuthenticated } from "../middlewares/auth/protect.js";
 import { validationUpdateProfile } from "../middlewares/validation/user/validationUserSchema.js";
+import { validationChangedPassword } from "../middlewares/validation/user/validationPasswordChange.js";
+import { isGuest } from "../middlewares/isGuest.js";
 config();
 
 const Node_Mailer = process.env.NodeMailer_MAIL;
@@ -41,6 +45,7 @@ const userAuthRoutes = express.Router();
  */
 userAuthRoutes.post(
   "/register",
+  isGuest,
   multerUplaoder.single("img"),
   validationImageMemeType,
   validationRegister,
@@ -102,6 +107,7 @@ userAuthRoutes.post(
  */
 userAuthRoutes.post(
   "/login",
+  isGuest,
   loginLimiter,
   validationLogin,
   isValideAccount,
@@ -135,12 +141,17 @@ userAuthRoutes.patch(
   uploadToCloudinary,
   UpdateProfileImage,
 );
-// for up how to delete the image from cloudinary the old one.
-
 
 // resset password
-// userAuthRoutes.post('/resset-password');
+userAuthRoutes.patch(
+  "/change-password",
+  checkUserIsAuthenticated,
+  validationChangedPassword,
+  UpdatePassword,
+);
 
+// forgot password
+userAuthRoutes.post('/forgot-password', isGuest, resendEmailForgotPass)
 // logout
 
 export default userAuthRoutes;
