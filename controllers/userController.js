@@ -1,6 +1,10 @@
 import { compare, genSalt } from "bcryptjs";
 import User from "../models/User.js";
-import { EmailTransporter, generateOTP } from "../utils/generateOTP.js";
+import {
+  EmailerSender,
+  EmailTransporter,
+  generateOTP,
+} from "../utils/generateOTP.js";
 import generateToken from "../utils/generateToken.js";
 import { config } from "dotenv";
 config();
@@ -172,10 +176,21 @@ export async function UpdatePassword(req, res, next) {
 // ================= FORGOT PASSWORD
 export async function ForgotPassword(req, res, next) {
   try {
+    const SOURCE = process.env.NodeMailer_MAIL;
+    const otp = generateOTP();
+
     let { email } = req.body;
     let user = await User.findOne({ email: email });
-    if (!user) return res.status(404).json({ error: "User Not Found" });
-    // send OTP via email
+    if (!user) return res.status(404).json({ error: "Email Not Exists" });
+    user.otp = otp;
+    user.otpAge = String(1000 * 10 * 60);
+    await EmailerSender(
+      SOURCE,
+      email,
+      "OTP Verification Number",
+      `Your OTP code is ${otp}`,
+    );
+    
     // validation otp
     // reset otpandmaxage
     // ask for new password
