@@ -180,22 +180,22 @@ export async function ForgotPassword(req, res, next) {
     const otp = generateOTP();
 
     let { email } = req.body;
-    let user = await User.findOne({ email: email });
+    let user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "Email Not Exists" });
     user.otp = otp;
-    user.otpAge = String(1000 * 10 * 60);
-    await EmailerSender(
-      SOURCE,
-      email,
-      "OTP Verification Number",
-      `Your OTP code is ${otp}`,
-    );
+    user.otpAge = String(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    await EmailTransporter().sendMail({
+      from : SOURCE, 
+      to : email , 
+      "subject": "OTP CODE",
+      "text" : "Your OTP CODE IS "+otp
+    });
     
-    // validation otp
-    // reset otpandmaxage
-    // ask for new password
-    // update password in the database
+    return res.status(200).json({message : "Check Your Email for OTP nomber"})
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }

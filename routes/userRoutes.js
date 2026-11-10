@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  ForgotPassword,
   Login,
   Profile,
   Register,
@@ -151,7 +152,33 @@ userAuthRoutes.patch(
 );
 
 // forgot password
-userAuthRoutes.post('/forgot-password', isGuest, resendEmailForgotPass)
+userAuthRoutes.post(
+  "/forgot-password",
+  isGuest,
+  resendEmailForgotPass,
+  ForgotPassword,
+);
+userAuthRoutes.post("/reset-otp-code", async function (req, res, next) {
+  try {
+    let { email, otp } = req.body;
+    let user = User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (+user.otp !== +otp) {
+      if (+user.otpAge < +Date.now()) {
+        return res.status(401).json({ error: "OTP code is Expired " });
+      }
+      return res.status(401).json({ error: "OTP not valide" });
+    }
+    user.otp = null;
+    user.otpAge = null;
+    await user.save();
+    return res.status(200).json({ message: "OTP CODE IS VALIDE" });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+userAuthRoutes.post('/user-Rpassword', function())
 // logout
 
 export default userAuthRoutes;
